@@ -830,6 +830,37 @@ a-scene {
   text-decoration: line-through;
 }
 
+/* ── Type-group rows (IFC class buckets inside storeys) ── */
+.tree-type-header {
+  background: rgba(9, 105, 218, 0.04);
+  border-radius: 4px;
+  margin-top: 2px;
+}
+.tree-type-header:hover {
+  background: rgba(9, 105, 218, 0.11);
+}
+.tree-icon--type {
+  color: #0969da;
+  opacity: 0.75;
+}
+.tree-type-label {
+  font-size: 0.69rem;
+  font-weight: 600;
+  color: #0969da;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+.tree-type-count {
+  font-size: 0.6rem;
+  color: #0969da;
+  opacity: 0.7;
+  margin-left: 4px;
+  background: rgba(9, 105, 218, 0.1);
+  border-radius: 8px;
+  padding: 0 5px;
+  line-height: 1.6;
+}
+
 /* ── 2D Plan View indicator ── */
 .plan-view-bar {
   display: none;

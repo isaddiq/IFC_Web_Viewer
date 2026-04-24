@@ -2091,6 +2091,41 @@
         }
       }
 
+      // IFC spatial container types — rendered as direct tree children, not grouped
+      const _SPATIAL_TYPES = new Set([
+        "IFCPROJECT",
+        "IFCSITE",
+        "IFCBUILDING",
+        "IFCBUILDINGSTOREY",
+        "IFCSPACE",
+        "IFCZONE",
+        "IFCSPATIALZONE",
+        "IFCEXTERNALSPATIALELEMENT",
+      ]);
+
+      function _typeGroupIcon(type) {
+        if (type.includes("WALL")) return "&#9727;";
+        if (type.includes("COLUMN")) return "&#9650;";
+        if (type.includes("BEAM")) return "&#8596;";
+        if (type.includes("SLAB") || type.includes("COVERING"))
+          return "&#9644;";
+        if (type.includes("DOOR")) return "&#128682;";
+        if (type.includes("WINDOW")) return "&#11036;";
+        if (type.includes("STAIR")) return "&#8616;";
+        if (type.includes("ROOF")) return "&#127968;";
+        if (
+          type.includes("PIPE") ||
+          type.includes("DUCT") ||
+          type.includes("FLOW")
+        )
+          return "&#9000;";
+        if (type.includes("FURNISH")) return "&#127968;";
+        if (type.includes("OPENING")) return "&#9645;";
+        if (type.includes("RAMP")) return "&#8599;";
+        if (type.includes("RAIL")) return "&#9135;";
+        return "&#128449;";
+      }
+
       function renderSchemaNode(node) {
         if (!node) return "";
 
@@ -2101,11 +2136,54 @@
         const label = escapeSchemaText(getSchemaNodeLabel(node));
         const meta = escapeSchemaText(getSchemaNodeMeta(node));
         const icon = getSchemaNodeIcon(node.type, hasChildren);
-        const childHtml = hasChildren
-          ? `<div class="tree-children">${children
-              .map((child) => renderSchemaNode(child))
-              .join("")}</div>`
-          : "";
+
+        let childHtml = "";
+        if (hasChildren) {
+          if (_SPATIAL_TYPES.has(node.type)) {
+            // Keep spatial children as direct nodes; group element children by IFC type
+            const spatialKids = children.filter((c) =>
+              _SPATIAL_TYPES.has(c.type),
+            );
+            const elementKids = children.filter(
+              (c) => !_SPATIAL_TYPES.has(c.type),
+            );
+
+            let inner = spatialKids.map((c) => renderSchemaNode(c)).join("");
+
+            if (elementKids.length > 0) {
+              const typeMap = new Map();
+              for (const child of elementKids) {
+                const t = child.type || "UNKNOWN";
+                if (!typeMap.has(t)) typeMap.set(t, []);
+                typeMap.get(t).push(child);
+              }
+              const sorted = [...typeMap.entries()].sort((a, b) =>
+                a[0].localeCompare(b[0]),
+              );
+              for (const [typeName, items] of sorted) {
+                const grpIcon = _typeGroupIcon(typeName);
+                const itemsHtml = items
+                  .map((c) => renderSchemaNode(c))
+                  .join("");
+                inner += `
+                  <div class="tree-node tree-type-group" data-express-id="">
+                    <div class="tree-header tree-type-header" onclick="handleSchemaNodeClick(event, this)">
+                      <span class="tree-toggle expanded">&#9654;</span>
+                      <span class="tree-icon tree-icon--type">${grpIcon}</span>
+                      <span class="tree-label tree-type-label">${escapeSchemaText(typeName)}</span>
+                      <span class="tree-count tree-type-count">${items.length}</span>
+                    </div>
+                    <div class="tree-children">${itemsHtml}</div>
+                  </div>`;
+              }
+            }
+            childHtml = `<div class="tree-children">${inner}</div>`;
+          } else {
+            childHtml = `<div class="tree-children">${children
+              .map((c) => renderSchemaNode(c))
+              .join("")}</div>`;
+          }
+        }
 
         return `
           <div class="tree-node" data-express-id="${node.expressID ?? ""}">
@@ -2162,11 +2240,14 @@
         event.stopPropagation();
         const node = header.closest(".tree-node");
         const rawExpressID = node?.dataset?.expressId;
-        const shouldToggle = event.target.closest(".tree-toggle");
+        // Type-group rows have no expressID — any click on them toggles
+        const isTypeGroup = rawExpressID == null || rawExpressID === "";
+        const shouldToggle =
+          event.target.closest(".tree-toggle") || isTypeGroup;
         if (shouldToggle) {
           toggleSchemaGroup(header);
         }
-        if (rawExpressID == null || rawExpressID === "") return;
+        if (isTypeGroup) return;
         const expressID = Number(rawExpressID);
         if (!Number.isFinite(expressID)) return;
         document
