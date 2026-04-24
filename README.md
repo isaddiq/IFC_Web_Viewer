@@ -2,7 +2,6 @@
 
 <div align="center">
 
-![BIMXR](assets/images/preview-sample.png)
 
 **A browser-based, WebXR-ready IFC building model viewer built on [A-Frame](https://aframe.io/) and [web-ifc-three](https://github.com/IFCjs/web-ifc-three).**
 
