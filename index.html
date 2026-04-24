@@ -2139,5 +2139,145 @@
         });
       }
     </script>
+
+    <!-- ── Visitor Counter Floating Button ── -->
+    <button
+      id="visitor-counter-btn"
+      title="Visitor Statistics"
+      onclick="
+        document.getElementById('visitor-counter-modal').style.display = 'flex'
+      "
+      style="
+        position: fixed;
+        top: 14px;
+        right: 14px;
+        z-index: 9999;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(13, 17, 23, 0.88);
+        border: 1.5px solid rgba(88, 166, 255, 0.35);
+        color: #e6edf3;
+        font-size: 1.25rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+        transition:
+          background 0.18s ease,
+          border-color 0.18s ease,
+          transform 0.15s ease;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      "
+      onmouseover="
+        this.style.background = 'rgba(88,166,255,0.18)';
+        this.style.borderColor = 'rgba(88,166,255,0.7)';
+        this.style.transform = 'scale(1.08)';
+      "
+      onmouseout="
+        this.style.background = 'rgba(13,17,23,0.88)';
+        this.style.borderColor = 'rgba(88,166,255,0.35)';
+        this.style.transform = 'scale(1)';
+      "
+    >
+      &#127758;
+    </button>
+
+    <!-- ── Visitor Counter Modal ── -->
+    <div
+      id="visitor-counter-modal"
+      onclick="if (event.target === this) this.style.display = 'none';"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        background: rgba(0, 0, 0, 0.62);
+        align-items: flex-start;
+        justify-content: flex-end;
+        padding: 68px 14px 0 0;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+      "
+    >
+      <div
+        style="
+          background: rgba(13, 17, 23, 0.97);
+          border: 1px solid rgba(88, 166, 255, 0.22);
+          border-radius: 14px;
+          padding: 20px 22px 16px;
+          box-shadow: 0 16px 56px rgba(0, 0, 0, 0.6);
+          min-width: 280px;
+          max-width: 420px;
+          position: relative;
+        "
+      >
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+          "
+        >
+          <span
+            style="
+              font-size: 0.88rem;
+              font-weight: 600;
+              color: #e6edf3;
+              letter-spacing: 0.02em;
+            "
+            >&#127758; Visitor Statistics</span
+          >
+          <button
+            onclick="
+              document.getElementById('visitor-counter-modal').style.display =
+                'none'
+            "
+            style="
+              background: none;
+              border: none;
+              color: #8b949e;
+              font-size: 1.1rem;
+              cursor: pointer;
+              line-height: 1;
+              padding: 2px 4px;
+              border-radius: 4px;
+              transition: color 0.15s ease;
+            "
+            onmouseover="this.style.color = '#e6edf3'"
+            onmouseout="this.style.color = '#8b949e'"
+          >
+            &#10005;
+          </button>
+        </div>
+        <div style="display: flex; justify-content: center">
+          <a
+            href="http://s01.flagcounter.com/more/2uk"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://s01.flagcounter.com/count2/2uk/bg_FFFFFF/txt_000000/border_CCCCCC/columns_7/maxflags_20/viewers_0/labels_1/pageviews_0/flags_0/percent_0/"
+              alt="Flag Counter"
+              border="0"
+              style="border-radius: 6px; max-width: 100%; display: block"
+            />
+          </a>
+        </div>
+        <p
+          style="
+            margin-top: 10px;
+            font-size: 0.74rem;
+            color: #484f58;
+            text-align: center;
+          "
+        >
+          Click the counter to see full statistics
+        </p>
+      </div>
+    </div>
   </body>
 </html>
